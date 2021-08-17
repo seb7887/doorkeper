@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package mnemosyne;
+
+message NewUserReq {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+  string role = 4;
+  string workspaceId = 5;
+}
+
+message LoginReq {
+  string email = 1;
+  string password = 2;
+}
+
+message GetEntityReq {
+  string id = 1;
+}
+
+message GetEntityByWorkspaceReq {
+  string workspaceId = 1;
+}
+
+message ModifyUserReq {
+  string currentUser = 1;
+  UserResponse user = 2;
+}
+
+message ChangePasswordReq {
+  string id = 1;
+  string password = 2;
+}
+
+message UserResponse {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string picture = 4;
+  string role = 5;
+  string currentWorkspace = 6;
+  string currentGrid = 7;
+  string lastLogin = 8;
+  string updatedAt = 9;
+}
+
+message UsersResponse {
+  repeated UserResponse users = 1;
+  int64 total = 2;
+}
+
+message StatusResponse {
+  bool success = 1;
+}
+
+message NewWorkspaceReq {
+  string name = 1;
+}
+
+message WorkspaceResponse {
+  string id = 1;
+  string name = 2;
+  string createdAt = 3;
+  string updatedAt = 4;
+}
+
+message NewGridReq {
+  string name = 1;
+  string workspaceId = 2;
+}
+
+message GridResponse {
+  string id = 1;
+  string name = 2;
+  string workspaceId = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message GridsResponse {
+  repeated GridResponse grids = 1;
+  int64 total = 2;
+}
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+}
+
+message NewNodeReq {
+  string name = 1;
+  string gridId = 2;
+  Location location = 3;
+  bool active = 4;
+  string createdBy = 5;
+}
+
+message UpdateNodeReq {
+  string currentUser = 1;
+  string nodeId = 2;
+  NewNodeReq fields = 3;
+}
+
+message GetEntityByGridReq {
+  string gridId = 1;
+}
+
+message NodeResponse {
+  string id = 1;
+  string name = 2;
+  bool active = 3;
+  string gridId = 4;
+  Location location = 5;
+  string createdBy = 6;
+  string createdAt = 7;
+  string updatedBy = 8;
+  string updatedAt = 9;
+}
+
+message NodesResponse {
+  repeated NodeResponse nodes = 1;
+  int64 total = 2;
+}
+
+message NewDeviceReq {
+  string apiKey = 1;
+  string deviceType = 2;
+  string createdBy = 3;
+}
+
+message GetEntityByNodeIdReq {
+  string nodeId = 1;
+}
+
+message UpdateDeviceReq {
+  string currentUser = 1;
+  string apiKey = 2;
+  Location location = 3;
+  string nodeId = 4;
+}
+
+message DeleteDeviceReq {
+  string currentUser = 1;
+  string deviceId = 2;
+}
+
+message DeviceResponse {
+  string id = 1;
+  string deviceType = 2;
+  string nodeId = 3;
+  Location location = 4;
+  string createdBy = 5;
+  string createdAt = 6;
+  string updatedBy = 7;
+  string updatedAt = 8;
+}
+
+message DevicesResponse {
+  repeated DeviceResponse devices = 1;
+  int64 total = 2;
+}
+
+service Mnemosyne {
+  // Workspaces
+  rpc CreateWorkspace(NewWorkspaceReq) returns (WorkspaceResponse) {}
+  rpc GetWorkspace(GetEntityReq) returns (WorkspaceResponse) {}
+  // Users
+  rpc SignUp(NewUserReq) returns (UserResponse) {}
+  rpc Login(LoginReq) returns (UserResponse) {}
+  rpc GetUser(GetEntityReq) returns (UserResponse) {}
+  rpc GetUsersByWorkspace(GetEntityByWorkspaceReq) returns (UsersResponse) {}
+  rpc UpdateUser(ModifyUserReq) returns (UserResponse) {}
+  rpc ChangePassword(ChangePasswordReq) returns (StatusResponse) {}
+  rpc DeleteUser(ModifyUserReq) returns (StatusResponse) {}
+  // Grids
+  rpc CreateGrid(NewGridReq) returns (GridResponse) {}
+  rpc GetGrid(GetEntityReq) returns (GridResponse) {}
+  rpc GetGridsByWorkspace(GetEntityByWorkspaceReq) returns (GridsResponse) {}
+  // Nodes
+  rpc CreateNode(NewNodeReq) returns (NodeResponse) {}
+  rpc GetNode(GetEntityReq) returns (NodeResponse) {}
+  rpc GetNodesByGrid(GetEntityByGridReq) returns (NodesResponse) {}
+  rpc UpdateNode(UpdateNodeReq) returns (NodeResponse) {}
+  rpc DeleteNode(UpdateNodeReq) returns (StatusResponse) {}
+  // Devices
+  rpc CreateDevice(NewDeviceReq) returns (DeviceResponse) {}
+  rpc GetDevice(GetEntityReq) returns (DeviceResponse) {}
+  rpc GetDevicesByNode(GetEntityByNodeIdReq) returns (DevicesResponse) {}
+  rpc UpdateDevice(UpdateDeviceReq) returns (DeviceResponse) {}
+  rpc DeleteDevice(DeleteDeviceReq) returns (StatusResponse) {}
+}
