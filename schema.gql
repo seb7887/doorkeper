@@ -1,0 +1,19 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  picture: String
+  role: String!
+  currentGrid: String
+  currentWorkspace: String
+  lastLogin: String!
+  updatedAt: String!
+}
+
+type Query {
+  user(id: String!): User!
+}

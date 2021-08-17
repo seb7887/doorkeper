@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { Metadata } from '@grpc/grpc-js'
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import {
@@ -10,9 +11,8 @@ import { join } from 'path'
 import { Observable } from 'rxjs'
 import { IMnemosyneService, UserResponse } from './mnemosyne.interface'
 
-const URL = 'localhost:6565'
+const URL = `${process.env.MNEMOSYNE_HOST}:${process.env.MNEMOSYNE_PORT}`
 const PACKAGE_NAME = 'mnemosyne'
-console.log(process.env.MNEMOSYNE_HOST)
 
 export const MnemosyneServiceOptions: ClientOptions = {
   transport: Transport.GRPC,
@@ -34,7 +34,7 @@ export class MnemosyneService implements OnModuleInit {
   onModuleInit() {
     this.mnemosyneService =
       this.client.getService<IMnemosyneService>('Mnemosyne')
-    this.metadata.add('authorization', 'Rpcksf2ZjnEphYR4iFevmzw1w87lGpXf')
+    this.metadata.add('authorization', process.env.MNEMOSYNE_KEY)
   }
 
   getUser(id: string): Observable<UserResponse> {
