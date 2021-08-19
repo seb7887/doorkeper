@@ -14,6 +14,37 @@ type User {
   updatedAt: String!
 }
 
+type AuthResponse implements UserBaseResponse {
+  user: User!
+  token: String!
+}
+
+interface UserBaseResponse {
+  user: User!
+}
+
+type UserResponse implements UserBaseResponse {
+  user: User!
+}
+
 type Query {
-  user(id: String!): User!
+  user(id: String!): UserResponse!
+}
+
+type Mutation {
+  signUp(user: NewUserInput!): AuthResponse!
+  login(credentials: LoginInput!): AuthResponse!
+}
+
+input NewUserInput {
+  username: String!
+  email: String!
+  password: String!
+  role: String!
+  workspaceId: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }

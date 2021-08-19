@@ -9,7 +9,8 @@ import {
 } from '@nestjs/microservices'
 import { join } from 'path'
 import { Observable } from 'rxjs'
-import { IMnemosyneService, UserResponse } from './mnemosyne.interface'
+import { MnemosyneGrpcService, UserResponse } from './mnemosyne.interface'
+import { LoginDto, NewUserDto } from './dto'
 
 const URL = `${process.env.MNEMOSYNE_HOST}:${process.env.MNEMOSYNE_PORT}`
 const PACKAGE_NAME = 'mnemosyne'
@@ -28,13 +29,21 @@ export class MnemosyneService implements OnModuleInit {
   @Client(MnemosyneServiceOptions)
   client: ClientGrpc
 
-  private mnemosyneService: IMnemosyneService
+  private mnemosyneService: MnemosyneGrpcService
   private metadata: Metadata = new Metadata()
 
   onModuleInit() {
     this.mnemosyneService =
-      this.client.getService<IMnemosyneService>('Mnemosyne')
+      this.client.getService<MnemosyneGrpcService>('Mnemosyne')
     this.metadata.add('authorization', process.env.MNEMOSYNE_KEY)
+  }
+
+  signUp(dto: NewUserDto): Observable<UserResponse> {
+    return this.mnemosyneService.signUp(dto, this.metadata)
+  }
+
+  login(dto: LoginDto): Observable<UserResponse> {
+    return this.mnemosyneService.login(dto, this.metadata)
   }
 
   getUser(id: string): Observable<UserResponse> {
